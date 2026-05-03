@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIVEELITE — Premium Cab Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5B800;
+    --gold-light: #FFD54F;
+    --gold-dim: #C49000;
+    --black: #FFFFFF;
+    --deep: #F7F8FC;
+    --panel: #FFFFFF;
+    --glass: rgba(245,184,0,0.15);
+    --white: #1A1A2E;
+    --muted: #4A5568;
+    --accent: #EDF2F7;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    /* mix-blend-mode: difference; */
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+  .logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    padding: 10px 24px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: #080808; }
+
+  /* HAMBURGER */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1100; }
+  .hamburger span { width: 26px; height: 1.5px; background: var(--gold); transition: all 0.3s; display: block; }
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* MOBILE MENU */
+  .mobile-menu {
+    position: fixed; inset: 0;
+    background: var(--black);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.77,0,0.175,1);
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+
+  /* ===== HERO ===== */
+  #hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 6vw;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: #FFFFFF;
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,184,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,184,0,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .hero-car {
+    position: absolute;
+    bottom: 3%;
+    left: 50%;
+    width: 55%;
+    max-width: 700px;
+    opacity: 0;
+    transform: translateX(-50%);
+    animation: carRealDrive 2s ease-out 1.8s forwards;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.12));
+  }
+  @keyframes carRealDrive {
+    0%   { opacity: 1; transform: translateX(-120vw); }
+    60%  { opacity: 1; transform: translateX(-45%); }
+    75%  { opacity: 1; transform: translateX(-52%); }
+    85%  { opacity: 1; transform: translateX(-48%); }
+    92%  { opacity: 1; transform: translateX(-50.5%); }
+    100% { opacity: 1; transform: translateX(-50%); }
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: slideRight 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 2.8s forwards;
+  }
+  .hero-badge-line { width: 40px; height: 1px; background: var(--gold); }
+  .hero-badge span {
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 13vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: slideRight 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 3.0s forwards;
+  }
+  .hero-title .outline {
+    -webkit-text-stroke: 1px var(--gold);
+    color: transparent;
+  }
+  .hero-title .gold { color: var(--gold); }
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 420px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: slideRight 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 3.2s forwards;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 40px;
+    opacity: 0;
+    animation: slideRight 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 3.4s forwards;
+  }
+  .btn-primary {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #F5B800, #FF9500);
+    color: #1A1A2E;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    display: inline-block;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-ghost {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--gold); }
+  .btn-ghost svg { transition: transform 0.3s; }
+  .btn-ghost:hover svg { transform: translateX(5px); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.4s forwards;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+  .hero-scroll-hint span {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @keyframes slideRight {
+    0% { opacity: 0; transform: translateX(-100px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  section {
+    position: relative;
+    overflow: hidden;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== MARQUEE ===== */
+  .marquee-strip {
+    background: var(--gold);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-inner {
+    display: inline-flex;
+    gap: 0;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: #080808;
+    padding: 0 30px;
+  }
+  .marquee-dot { color: #080808; opacity: 0.4; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== ABOUT / REVEAL ===== */
+  #about {
+    padding: 120px 6vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+  }
+  .about-img-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, transparent 60%);
+    z-index: 1;
+  }
+  .about-img-inner {
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(ellipse at 40% 30%, rgba(201,168,76,0.2) 0%, transparent 60%),
+      var(--panel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* SVG Car Illustration */
+  .car-illus { width: 80%; opacity: 0.9; }
+  .about-frame-border {
+    position: absolute;
+    top: -12px; right: -12px;
+    width: 60%;
+    height: 60%;
+    border-top: 1px solid var(--gold);
+    border-right: 1px solid var(--gold);
+  }
+  .about-frame-border-2 {
+    position: absolute;
+    bottom: -12px; left: -12px;
+    width: 60%;
+    height: 60%;
+    border-bottom: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+  }
+  .about-badge-float {
+    position: absolute;
+    bottom: 30px;
+    right: -28px;
+    background: linear-gradient(135deg, #F5B800, #FF9500);
+    color: #1A1A2E;
+    padding: 20px 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .about-badge-float .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+  .about-badge-float .lbl {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(8,8,8,0.7);
+    margin-top: 4px;
+  }
+  .about-content { }
+  .about-content .big-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.5;
+    color: var(--white);
+    margin: 24px 0;
+    font-style: italic;
+  }
+  .about-content p {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 0.92rem;
+    margin-bottom: 16px;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* REVEAL ANIMATION CLASSES */
+  .reveal { opacity: 0; transform: translateY(50px); transition: opacity 0.9s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.85); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+
+  /* ===== SERVICES ===== */
+  #services {
+    padding: 120px 6vw;
+    background: linear-gradient(180deg, #F7F8FC 0%, #EFF1F8 100%);
+  }
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 70px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .service-card {
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+    transition: background 0.4s, opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s;
+  }
+  .service-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+  .service-card:hover { box-shadow: 0 12px 40px rgba(201,168,76,0.15); }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover::after { transform: scaleX(1); }
+  .service-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .service-card:hover .service-img { transform: scale(1.05); }
+  .service-img-wrap {
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+  .service-body {
+    padding: 28px 28px 32px;
+    position: relative;
+  }
+  .service-icon {
+    width: 46px; height: 46px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    background: rgba(201,168,76,0.06);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .service-card:hover .service-icon { border-color: var(--gold); background: rgba(201,168,76,0.12); }
+  .service-icon svg { width: 20px; height: 20px; stroke: var(--gold); fill: none; }
+  .service-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .service-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .service-num {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: rgba(201,168,76,0.08);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .service-card:hover .service-num { color: rgba(201,168,76,0.14); }
+
+  /* ===== PROCESS / STEPS ===== */
+  #process {
+    padding: 120px 6vw;
+  }
+  .process-header { text-align: center; margin-bottom: 80px; }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .process-line {
+    display: none;
+  }
+  .process-step {
+    text-align: center;
+    padding: 32px 24px;
+    position: relative;
+    background: var(--panel);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    border: 1px solid rgba(245,184,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .process-step:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(245,184,0,0.15);
+    border-color: rgba(245,184,0,0.3);
+  }
+  .step-circle {
+    width: 72px; height: 72px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    background: var(--black);
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .process-step.visible .step-circle {
+    border-color: var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.2);
+  }
+  .step-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .step-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ===== PARALLAX HIGHLIGHT ===== */
+  #highlight {
+    padding: 0;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--panel) 0%, #F0F0F0 100%);
+  }
+  .highlight-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .h-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent 10%, rgba(201,168,76,0.12) 50%, transparent 90%);
+  }
+  .highlight-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    padding: 0 6vw;
+  }
+  .highlight-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 5vw, 4rem);
+    line-height: 1.35;
+    font-style: italic;
+    font-weight: 300;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .highlight-quote .gold { color: var(--gold); }
+  .highlight-quote .outline {
+    -webkit-text-stroke: 1px rgba(33,37,41,0.3);
+    color: transparent;
+  }
+  .highlight-author {
+    margin-top: 28px;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ===== FLEET ===== */
+  #fleet {
+    padding: 120px 6vw;
+    background: var(--deep);
+  }
+  .fleet-header { margin-bottom: 60px; }
+  .fleet-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .fleet-tab {
+    padding: 14px 28px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.3s;
+  }
+  .fleet-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .fleet-card {
+    background: var(--panel);
+    overflow: hidden;
+    position: relative;
+    group: true;
+  }
+  .fleet-card-img {
+    aspect-ratio: 16/9;
+    background: #F5F5F5;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fleet-card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(248,249,250,0.8) 0%, transparent 60%);
+  }
+  .fleet-car-svg { width: 80%; opacity: 0.85; transition: transform 0.5s ease; }
+  .fleet-card:hover .fleet-car-svg { transform: scale(1.05); }
+  .fleet-card-info { padding: 24px; }
+  .fleet-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .fleet-card-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .fleet-card-price {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+
+  /* ===== TESTIMONIALS ===== */
+  #testimonials {
+    padding: 120px 6vw;
+    position: relative;
+  }
+  .test-header { text-align: center; margin-bottom: 60px; }
+  .testimonials-container {
+    overflow: hidden;
+    width: 100%;
+    padding: 20px 0;
+  }
+  .testimonials-track {
+    display: inline-flex;
+    gap: 24px;
+    animation: scrollReviews 25s linear infinite;
+    width: max-content;
+  }
+  .testimonials-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes scrollReviews {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 12px)); }
+  }
+  .test-card {
+    background: var(--panel);
+    padding: 40px 32px;
+    border: 1px solid rgba(201,168,76,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+    width: 380px;
+    flex-shrink: 0;
+  .test-card:hover { border-color: rgba(201,168,76,0.25); }
+  .test-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem;
+    color: rgba(201,168,76,0.07);
+    line-height: 1;
+  }
+  .test-stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .star { color: var(--gold); font-size: 0.85rem; }
+  .test-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--white);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .test-author { display: flex; align-items: center; gap: 16px; }
+  .test-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: #080808;
+    flex-shrink: 0;
+  }
+  .test-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .test-role { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+
+  /* ===== BOOKING FORM ===== */
+  #booking {
+    padding: 120px 6vw;
+    background: var(--deep);
+  }
+  .booking-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .booking-content { }
+  .booking-content p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 20px;
+    max-width: 420px;
+  }
+  .booking-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+  .booking-feature { display: flex; align-items: center; gap: 16px; }
+  .booking-feature-icon {
+    width: 36px; height: 36px; border: 1px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .booking-feature-icon svg { width: 14px; height: 14px; stroke: var(--gold); fill: none; }
+  .booking-feature-text { font-size: 0.82rem; color: var(--muted); }
+  .booking-feature-text strong { color: var(--white); display: block; font-size: 0.88rem; margin-bottom: 2px; }
+
+  .booking-form { }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .form-label { font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .form-input, .form-select {
+    background: var(--panel);
+    border: 1px solid rgba(201,168,76,0.15);
+    color: var(--white);
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: rgba(136,136,128,0.5); }
+  .btn-submit {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #F5B800, #FF9500);
+    color: #1A1A2E;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.3s, transform 0.2s;
+    margin-top: 8px;
+  }
+  .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #FFFFFF;
+    color: var(--white);
+    padding: 80px 6vw 40px;
+    border-top: 2px solid rgba(245,184,0,0.15);
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  .footer-brand .logo { font-size: 2rem; margin-bottom: 16px; display: block; }
+  .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 260px; }
+  .footer-col h4 {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-col ul li a {
+    font-size: 0.83rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--white); }
+  .footer-bottom {
+    padding-top: 40px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-bottom p { font-size: 0.75rem; color: rgba(136,136,128,0.5); }
+  .footer-socials { display: flex; gap: 16px; }
+  .footer-social {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s; color: var(--muted); font-size: 0.75rem; text-decoration: none;
+  }
+  .footer-social:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* FLOATING CTA */
+  
+  .float-wa { position: fixed; bottom: 32px; left: 32px; z-index: 900; opacity: 0; transform: translateY(20px); transition: all 0.4s; pointer-events: none; }
+  .float-phone { position: fixed; bottom: 32px; right: 32px; z-index: 900; opacity: 0; transform: translateY(20px); transition: all 0.4s; pointer-events: none; }
+  .float-wa.visible, .float-phone.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .f-cta {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s;
+  }
+  .f-cta:hover { transform: scale(1.1); }
+  .f-wa { background: #25D366; }
+  .f-phone { background: var(--gold); color: #080808; }
+
+  /* PARALLAX ELEMENT */
+  .parallax-slow { will-change: transform; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    #hero { padding: 0 6vw 14vh; }
+    .hero-car { width: 100%; right: -10%; bottom: 8%; opacity: 0.5; }
+    #about { grid-template-columns: 1fr; gap: 40px; padding: 80px 6vw; }
+    .about-badge-float { right: 16px; bottom: 16px; }
+    .services-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .services-grid { grid-template-columns: 1fr; gap: 20px; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .process-line { display: none; }
+    .fleet-grid { grid-template-columns: 1fr; }
+    .fleet-tabs { overflow-x: auto; }
+    /* .testimonials-track { grid-template-columns: 1fr; } */
+    .booking-inner { grid-template-columns: 1fr; gap: 40px; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+    .floating-ctas { bottom: 20px; right: 20px; gap: 12px; }
+    .f-cta { width: 50px; height: 50px; }
+    .about-img-frame { aspect-ratio: 4/3; }
+  }
+  @media (max-width: 560px) {
+    .hero-title { font-size: clamp(3.2rem, 15vw, 5rem); }
+    .hero-actions { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .form-row { grid-template-columns: 1fr; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .process-step { aspect-ratio: 1; padding: 10px 6px; border-radius: 12px; }
+    .step-circle { width: 36px; height: 36px; font-size: 0.95rem; margin-bottom: 8px; }
+    .step-title { font-size: 0.78rem; margin-bottom: 4px; }
+    .step-desc { font-size: 0.58rem; line-height: 1.3; }
+    .footer-top { grid-template-columns: 1fr; }
+    #services, #about, #fleet, #testimonials, #booking, #process { padding: 80px 5vw; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+  /* PAGE LOADER */
+  .loader {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  .loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+  .loader-bar {
+    width: 200px;
+    height: 1px;
+    background: rgba(201,168,76,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .loader-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; bottom: 0;
+    width: 100%;
+    background: var(--gold);
+    animation: loadBar 1.2s ease-in-out forwards;
+  }
+  @keyframes loadBar {
+    to { left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-logo">DRIVEELITE</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">DRIVE<span>ELITE</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#fleet">Fleet</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <a href="#booking" class="nav-cta">Book Now</a>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" class="mob-link">Services</a>
+  <a href="#fleet" class="mob-link">Fleet</a>
+  <a href="#about" class="mob-link">About</a>
+  <a href="#testimonials" class="mob-link">Reviews</a>
+  <a href="#booking" class="mob-link" style="color:var(--gold)">Book Now</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Inline SVG Car -->
+  <img class="hero-car" src="assets/hero_car_1777802896652.png" alt="Hero Car">
+
+  <div style="position:relative;z-index:2;">
+    <div class="hero-badge">
+      <div class="hero-badge-line"></div>
+      <span>Premium Cab Service • சிறந்த வழிப்பயணம்</span>
+    </div>
+    <h1 class="hero-title">
+      ARRIVE<br>
+      <span class="gold">IN</span> <span class="outline">STYLE</span>
+    </h1>
+    <p class="hero-sub">Where every ride is an experience. Luxury transportation crafted for those who demand the finest.<br><span style="font-size:0.9em;color:var(--gold);opacity:0.9;">உங்கள் பயணம், எங்கள் பொறுப்பு</span></p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn-primary">Book Your Ride</a>
+      <a href="#fleet" class="btn-ghost">
+        View Fleet
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner" id="marqueeInner">
+    <!-- Repeated items for seamless loop -->
+    <span class="marquee-item">AIRPORT TRANSFERS</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">CITY RIDES</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">CORPORATE TRAVEL</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">WEDDING RIDES</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">24/7 AVAILABLE</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">PROFESSIONAL DRIVERS</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">FIXED PRICING</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">AIRPORT TRANSFERS</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">CITY RIDES</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">CORPORATE TRAVEL</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">WEDDING RIDES</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">24/7 AVAILABLE</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">PROFESSIONAL DRIVERS</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">FIXED PRICING</span><span class="marquee-dot">◆</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual reveal-left">
+    <div class="about-img-frame">
+      <div class="about-img-inner">
+        <!-- Driver illustration SVG -->
+        <img class="car-illus" src="assets/about_car_1777802911142.png" alt="About Car" style="mix-blend-mode: multiply; width: 90%;">
+      </div>
+    </div>
+    <div class="about-frame-border"></div>
+    <div class="about-frame-border-2"></div>
+    <div class="about-badge-float">
+      <div class="num">8+</div>
+      <div class="lbl">Years on Road</div>
+    </div>
+  </div>
+
+  <div class="about-content">
+    <p class="section-label reveal delay-1">Our Story</p>
+    <h2 class="section-title reveal delay-2">MORE THAN<br>JUST A RIDE</h2>
+    <p class="big-text reveal delay-2">"Every destination matters, but so does the journey."<br><span style="font-size:0.8em;color:var(--gold);">— எல்லா பயணமும் முக்கியம்</span></p>
+    <p class="reveal delay-3">We are a premium cab service built on trust, punctuality, and an unwavering commitment to passenger comfort. From the moment you book to the second you arrive — your experience is our priority.</p>
+    <p class="reveal delay-3">Our professionally trained drivers know the city like the back of their hand, ensuring the fastest, safest routes every single time.</p>
+    <div class="about-stats">
+      <div class="stat-item reveal delay-2">
+        <div class="stat-num">5K+</div>
+        <div class="stat-lbl">Happy Riders</div>
+      </div>
+      <div class="stat-item reveal delay-3">
+        <div class="stat-num">98%</div>
+        <div class="stat-lbl">On-Time Rate</div>
+      </div>
+      <div class="stat-item reveal delay-4">
+        <div class="stat-num">24/7</div>
+        <div class="stat-lbl">Available</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <div>
+      <p class="section-label reveal">What We Offer</p>
+      <h2 class="section-title reveal delay-1">OUR<br>SERVICES<br><span style="font-size:0.35em;color:var(--gold);font-family:sans-serif;letter-spacing:0.05em;">எங்கள் சேவைகள்</span></h2>
+    </div>
+    <p class="reveal delay-2" style="max-width:320px;font-size:0.85rem;color:var(--muted);line-height:1.8;">Tailored transportation solutions for every occasion — from daily commutes to special events.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_city_rides_1777805284837.png" alt="City Rides"></div>
+      <div class="service-body">
+        <div class="service-num">01</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 18h1a2 2 0 002-2V8a2 2 0 00-2-2H3m0 12V6m0 12h18M3 6h18m0 0v12m0-12h-1a2 2 0 00-2 2v8a2 2 0 002 2h1"/></svg>
+        </div>
+        <div class="service-name">City Rides</div>
+        <p class="service-desc">Quick, comfortable rides across the city. Beat traffic with our route-optimized drives.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_airport_1777805301200.png" alt="Airport Transfers"></div>
+      <div class="service-body">
+        <div class="service-num">02</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="service-name">Airport Transfers</div>
+        <p class="service-desc">Never miss a flight. We track your schedule and ensure you arrive on time, every time.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_tourist_1777805319140.png" alt="Tourist Places"></div>
+      <div class="service-body">
+        <div class="service-num">03</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+        </div>
+        <div class="service-name">Tourist Places</div>
+        <p class="service-desc">Explore scenic destinations with comfort. Custom tours to hills, temples, and heritage sites.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_wedding_1777805334273.png" alt="Wedding Rides"></div>
+      <div class="service-body">
+        <div class="service-num">04</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <div class="service-name">Wedding Rides</div>
+        <p class="service-desc">Make your special day memorable with our pristine, decorated luxury vehicles.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_corporate_1777805354546.png" alt="Corporate Travel"></div>
+      <div class="service-body">
+        <div class="service-num">05</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        </div>
+        <div class="service-name">Corporate Travel</div>
+        <p class="service-desc">Professional, punctual, and presentable. Ideal for business meetings and client pickups.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_hourly_1777805371980.png" alt="Hourly Rental"></div>
+      <div class="service-body">
+        <div class="service-num">06</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="service-name">Hourly Rental</div>
+        <p class="service-desc">Keep a car at your disposal for as many hours as you need. Perfect for full-day use.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-img-wrap"><img class="service-img" src="assets/svc_night_1777805388307.png" alt="Safe Night Rides"></div>
+      <div class="service-body">
+        <div class="service-num">07</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="service-name">Safe Night Rides</div>
+        <p class="service-desc">Fully verified drivers, live tracking, and emergency support for late-night journeys.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-header">
+    <p class="section-label reveal">How It Works</p>
+    <h2 class="section-title reveal delay-1">SIMPLE.<br>SEAMLESS. SWIFT.</h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-line"></div>
+    <div class="process-step reveal delay-1">
+      <div class="step-circle">01</div>
+      <div class="step-title">Book</div>
+      <p class="step-desc">Call us or book online. Share your pickup and destination.</p>
+    </div>
+    <div class="process-step reveal delay-2">
+      <div class="step-circle">02</div>
+      <div class="step-title">Confirm</div>
+      <p class="step-desc">Get instant confirmation with driver and car details.</p>
+    </div>
+    <div class="process-step reveal delay-3">
+      <div class="step-circle">03</div>
+      <div class="step-title">Ride</div>
+      <p class="step-desc">Your driver arrives on time. Enjoy your premium ride.</p>
+    </div>
+    <div class="process-step reveal delay-4">
+      <div class="step-circle">04</div>
+      <div class="step-title">Arrive</div>
+      <p class="step-desc">Reach safely. Pay easily with cash or digital.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHT / PARALLAX QUOTE -->
+<section id="highlight">
+  <div class="highlight-bg"></div>
+  <div class="highlight-lines" id="hLines"></div>
+  <div class="highlight-content">
+    <div class="highlight-quote reveal">
+      <span class="gold">Luxury</span> is not about the car —<br>
+      it is about the <span class="outline">experience</span><br>
+      inside it.
+    </div>
+    <div class="highlight-author reveal delay-2">— The DriveElite Promise<br><span style="font-size:0.75em;opacity:0.7;">நம்பிக்கையான பயணம், பாதுகாப்பான சேவை</span></div>
+  </div>
+</section>
+
+<!-- FLEET -->
+<section id="fleet">
+  <div class="fleet-header">
+    <p class="section-label reveal">Our Vehicles</p>
+    <h2 class="section-title reveal delay-1">THE FLEET<br><span style="font-size:0.35em;color:var(--gold);font-family:sans-serif;">எங்கள் வாகனங்கள்</span></h2>
+  </div>
+  <div class="fleet-tabs">
+    <div class="fleet-tab active" data-tab="all">All Vehicles</div>
+    <div class="fleet-tab" data-tab="sedan">Sedan</div>
+    <div class="fleet-tab" data-tab="suv">SUV</div>
+    <div class="fleet-tab" data-tab="luxury">Luxury</div>
+  </div>
+  <div class="fleet-grid">
+    <div class="fleet-card reveal delay-1">
+      <div class="fleet-card-img">
+        <img class="fleet-car-svg" src="assets/fleet_sedan_1777802925870.png" alt="Sedan" style="mix-blend-mode: multiply; width: 100%; object-fit: contain;">
+      </div>
+      <div class="fleet-card-info">
+        <div class="fleet-card-name">Executive Sedan</div>
+        <p class="fleet-card-desc">Sleek, professional, and comfortable — perfect for business and daily use.</p>
+        <div class="fleet-card-price">Starting ₹15 / km</div>
+      </div>
+    </div>
+    <div class="fleet-card reveal delay-2">
+      <div class="fleet-card-img">
+        <img class="fleet-car-svg" src="assets/fleet_suv_1777802941150.png" alt="SUV" style="mix-blend-mode: multiply; width: 100%; object-fit: contain;">
+      </div>
+      <div class="fleet-card-info">
+        <div class="fleet-card-name">Premium SUV</div>
+        <p class="fleet-card-desc">Spacious interiors, commanding presence, ideal for families and groups.</p>
+        <div class="fleet-card-price">Starting ₹22 / km</div>
+      </div>
+    </div>
+    <div class="fleet-card reveal delay-3">
+      <div class="fleet-card-img" style="background: linear-gradient(135deg, #F2F2F2, #FAF4E5);">
+        <img class="fleet-car-svg" src="assets/fleet_luxury_1777802957553.png" alt="Luxury" style="mix-blend-mode: multiply; width: 100%; object-fit: contain;">
+      </div>
+      <div class="fleet-card-info">
+        <div class="fleet-card-name">Luxury Class</div>
+        <p class="fleet-card-desc">Our finest offering — leather interiors, ambient lighting, and unmatched elegance.</p>
+        <div class="fleet-card-price">Starting ₹40 / km</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="test-header">
+    <p class="section-label reveal">What People Say</p>
+    <h2 class="section-title reveal delay-1">WORDS FROM<br>OUR RIDERS<br><span style="font-size:0.35em;color:var(--gold);font-family:sans-serif;">வாடிக்கையாளர் கருத்துகள்</span></h2>
+  </div>
+  <div class="testimonials-container">
+  <div class="testimonials-track">
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Incredible punctuality and a spotless car. A truly premium and smooth ride!</p>
+      <div class="test-author">
+        <div class="test-avatar">AK</div>
+        <div>
+          <div class="test-name">Arjun Kapoor</div>
+          <div class="test-role">Business Executive, Chennai</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Flawless service for our wedding! Stunning car and perfectly on time.</p>
+      <div class="test-author">
+        <div class="test-avatar">PM</div>
+        <div>
+          <div class="test-name">Priya Mehta</div>
+          <div class="test-role">Newly Wed, Bangalore</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Seamless airport pickup! Driver tracked my flight. True premium experience.</p>
+      <div class="test-author">
+        <div class="test-avatar">RV</div>
+        <div>
+          <div class="test-name">Ravi Venkatesh</div>
+          <div class="test-role">Frequent Flyer, Mumbai</div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Incredible punctuality and a spotless car. A truly premium and smooth ride!</p>
+      <div class="test-author">
+        <div class="test-avatar">AK</div>
+        <div>
+          <div class="test-name">Arjun Kapoor</div>
+          <div class="test-role">Business Executive, Chennai</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Flawless service for our wedding! Stunning car and perfectly on time.</p>
+      <div class="test-author">
+        <div class="test-avatar">PM</div>
+        <div>
+          <div class="test-name">Priya Mehta</div>
+          <div class="test-role">Newly Wed, Bangalore</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card ">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Seamless airport pickup! Driver tracked my flight. True premium experience.</p>
+      <div class="test-author">
+        <div class="test-avatar">RV</div>
+        <div>
+          <div class="test-name">Ravi Venkatesh</div>
+          <div class="test-role">Frequent Flyer, Mumbai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking">
+  <div class="booking-inner">
+    <div class="booking-content">
+      <p class="section-label reveal">Reserve Your Ride</p>
+      <h2 class="section-title reveal delay-1">BOOK<br>NOW<br><span style="font-size:0.35em;color:var(--gold);font-family:sans-serif;">இப்போதே முன்பதிவு செய்யுங்கள்</span></h2>
+      <p class="reveal delay-2">Fill in your details and we'll get back to you in minutes. No surge pricing. No hidden fees. Just a premium ride at a fair price.</p>
+      <div class="booking-features">
+        <div class="booking-feature reveal delay-2">
+          <div class="booking-feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div class="booking-feature-text">
+            <strong>Fixed Pricing</strong>
+            What we quote is what you pay.
+          </div>
+        </div>
+        <div class="booking-feature reveal delay-3">
+          <div class="booking-feature-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="booking-feature-text">
+            <strong>Instant Confirmation</strong>
+            Driver assigned within 5 minutes.
+          </div>
+        </div>
+        <div class="booking-feature reveal delay-4">
+          <div class="booking-feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="booking-feature-text">
+            <strong>Safe & Verified</strong>
+            All drivers are background checked.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-form reveal-right">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="Full Name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="+91 00000 00000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pickup Location</label>
+        <input type="text" class="form-input" placeholder="Enter pickup address">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Drop Location</label>
+        <input type="text" class="form-input" placeholder="Enter destination">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="time" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vehicle Type</label>
+        <select class="form-select">
+          <option value="">Select vehicle</option>
+          <option>Executive Sedan</option>
+          <option>Premium SUV</option>
+          <option>Luxury Class</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="handleBooking()">Confirm Booking →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="logo">DRIVE<span>ELITE</span></span>
+      <p>Premium cab service built on trust, comfort, and an obsession with getting you there in style.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">City Rides</a></li>
+        <li><a href="#">Airport Transfers</a></li>
+        <li><a href="#">Corporate Travel</a></li>
+        <li><a href="#">Wedding Rides</a></li>
+        <li><a href="#">Hourly Rental</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Fleet</a></li>
+        <li><a href="#">Testimonials</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+919999999999">+91 99999 99999</a></li>
+        <li><a href="mailto:hello@driveelite.in">hello@driveelite.in</a></li>
+        <li><a href="#">Chennai, Tamil Nadu</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 DriveElite. All rights reserved. Designed with passion.</p>
+    <div class="footer-socials">
+      <a href="#" class="footer-social">f</a>
+      <a href="#" class="footer-social">in</a>
+      <a href="#" class="footer-social">ig</a>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING CTA -->
+
+<a href="https://wa.me/919999999999" target="_blank" class="f-cta f-wa float-wa" id="floatWa">
+  <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.28 5.28 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+</a>
+<a href="tel:+919999999999" class="f-cta f-phone float-phone" id="floatPhone">
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+</a>
+
+
+<script>
+  // LOADER
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 1400);
+  });
+
+  // CUSTOM CURSOR (desktop only)
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  if (window.innerWidth > 900) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 5 + 'px';
+      cursor.style.top = my - 5 + 'px';
+    });
+    function animRing() {
+      rx += (mx - rx - 18) * 0.15;
+      ry += (my - ry - 18) * 0.15;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a, button, .service-card, .fleet-tab, .fleet-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.transform = 'scale(2)'; ring.style.opacity = '0.3'; });
+      el.addEventListener('mouseleave', () => { ring.style.transform = 'scale(1)'; ring.style.opacity = '0.6'; });
+    });
+  } else {
+    cursor.style.display = 'none';
+    ring.style.display = 'none';
+  }
+
+  // HAMBURGER
+  const ham = document.getElementById('hamburger');
+  const mob = document.getElementById('mobileMenu');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  });
+  document.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => {
+    ham.classList.remove('open');
+    mob.classList.remove('open');
+  }));
+
+  // SCROLL REVEAL
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .service-card, .process-step');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+  revealEls.forEach(el => observer.observe(el));
+
+  // FLOATING CTA SHOW
+  const floatWa = document.getElementById('floatWa');
+  const floatPhone = document.getElementById('floatPhone');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) { floatWa.classList.add('visible'); floatPhone.classList.add('visible'); }
+    else { floatWa.classList.remove('visible'); floatPhone.classList.remove('visible'); }
+  });
+
+  // HIGHLIGHT LINES
+  const hLines = document.getElementById('hLines');
+  for (let i = 0; i < 8; i++) {
+    const l = document.createElement('div');
+    l.className = 'h-line';
+    l.style.top = (10 + i * 12) + '%';
+    hLines.appendChild(l);
+  }
+
+  // PARALLAX ON SCROLL
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const sy = window.scrollY;
+        const heroCar = document.querySelector('.hero-car');
+        if (heroCar) heroCar.style.transform = `translateX(-50%) translateY(${sy * 0.08}px)`;
+        const hContent = document.querySelector('.highlight-content');
+        if (hContent) {
+          const hl = document.getElementById('highlight');
+          const rect = hl.getBoundingClientRect();
+          const progress = -rect.top / window.innerHeight;
+          hContent.style.transform = `translateY(${progress * -30}px)`;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // FLEET TABS
+  document.querySelectorAll('.fleet-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.fleet-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // BOOKING HANDLER
+  function handleBooking() {
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = '✓ Booking Confirmed!';
+    btn.style.background = '#2d6a2d';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = 'Confirm Booking →';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+
+  // COUNTER ANIMATION
+  function animCount(el, end, suffix='') {
+    let start = 0;
+    const dur = 1800;
+    const step = end / (dur / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) { start = end; clearInterval(timer); }
+      el.textContent = Math.floor(start) + suffix;
+    }, 16);
+  }
+  const statObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = document.querySelectorAll('.stat-num');
+        nums[0] && animCount(nums[0], 5000, 'K+') && (nums[0].textContent = '5K+');
+        nums[1] && (nums[1].textContent = '98%');
+        nums[2] && (nums[2].textContent = '24/7');
+        statObs.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  const statsEl = document.querySelector('.about-stats');
+  if (statsEl) statObs.observe(statsEl);
+
+  // STAGGER service cards
+  document.querySelectorAll('.service-card').forEach((card, i) => {
+    card.style.transitionDelay = (i * 0.1) + 's';
+  });
+</script>
+</body>
+</html>
